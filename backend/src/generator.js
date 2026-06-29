@@ -1,8 +1,25 @@
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { canciones } from './songs.js';
 
 const pad4 = (n) => String(n).padStart(4, '0');
 const escapeHtml = (value) => String(value).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const totalCanciones = canciones.length;
+const assetsDir = join(dirname(fileURLToPath(import.meta.url)), 'assets');
+
+function pngDataUri(nombreArchivo) {
+  return `data:image/png;base64,${readFileSync(join(assetsDir, nombreArchivo)).toString('base64')}`;
+}
+
+const imagenes = {
+  escudo: pngDataUri('escudo.png'),
+  hospital: pngDataUri('hospital.png'),
+  flamenca: pngDataUri('flamenca.png'),
+  guitarra: pngDataUri('guitarra.png'),
+  notas: pngDataUri('notas.png'),
+  abanico: pngDataUri('abanico.png')
+};
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i -= 1) {
@@ -42,8 +59,8 @@ export function generarCartones(cantidad, numeroInicial) {
   });
 }
 
-function placeholder(clase, texto) {
-  return `<span class="decoracion ${clase}" aria-hidden="true">${texto}</span>`;
+function imagenDecorativa(clase, src, alt = '') {
+  return `<img class="decoracion ${clase}" src="${src}" alt="${alt}" aria-hidden="true">`;
 }
 
 function renderCarton(carton) {
@@ -55,12 +72,12 @@ function renderCarton(carton) {
       <strong>${carton.codigo}</strong>
     </aside>
     <section class="contenido">
-      ${placeholder('escudo', 'Escudo')}
-      ${placeholder('hospital', 'Hospital')}
-      ${placeholder('flamenca', 'Flamenca')}
-      ${placeholder('guitarra', 'Guitarra')}
-      ${placeholder('notas', '♪ ♫')}
-      ${placeholder('abanico', 'Abanico')}
+      ${imagenDecorativa('escudo', imagenes.escudo)}
+      ${imagenDecorativa('hospital', imagenes.hospital)}
+      ${imagenDecorativa('flamenca', imagenes.flamenca)}
+      ${imagenDecorativa('guitarra', imagenes.guitarra)}
+      ${imagenDecorativa('notas', imagenes.notas)}
+      ${imagenDecorativa('abanico', imagenes.abanico)}
       <header>
         <h1>BINGO CANTADO SOLIDARIO</h1>
         <h2>A beneficio del Hospital Ambulante</h2>
@@ -89,23 +106,23 @@ export function generarHtml(cartones) {
     .lateral { width: 29mm; background: linear-gradient(180deg, #8e1d16, #62130f); color: #fff6df; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3mm; text-align: center; padding: 3mm; border-right: 2px solid #d4a15d; }
     .lateral span { font-size: 9px; text-transform: uppercase; letter-spacing: .8px; }
     .lateral strong { font-size: 18px; line-height: 1; }
-    .contenido { flex: 1; padding: 3mm 4mm; display: flex; flex-direction: column; gap: 2mm; position: relative; overflow: hidden; background: radial-gradient(circle at 12% 14%, rgba(218, 45, 35, .09), transparent 24%), radial-gradient(circle at 88% 18%, rgba(219, 155, 47, .15), transparent 25%), #fff9ee; }
-    header { text-align: center; border-bottom: 1.4px solid #d8a37a; padding: 0 16mm 1.5mm; min-height: 22mm; position: relative; z-index: 1; }
+    .contenido { flex: 1; padding: 3mm 4mm; display: flex; flex-direction: column; gap: 2mm; position: relative; overflow: hidden; background: radial-gradient(circle at 13% 16%, rgba(218, 45, 35, .08), transparent 23%), radial-gradient(circle at 87% 18%, rgba(219, 155, 47, .14), transparent 24%), linear-gradient(180deg, #fffaf0 0%, #fff4e2 100%); }
+    header { text-align: center; border-bottom: 1.4px solid #d8a37a; padding: 0 18mm 1.5mm; min-height: 22mm; position: relative; z-index: 2; }
     h1 { margin: 0; color: #c51619; font-size: 19px; letter-spacing: .6px; font-weight: 900; text-shadow: 0 1px 0 #fff; }
     h2 { margin: .7mm 0 0; font-family: Georgia, 'Times New Roman', serif; font-size: 12px; color: #3b2118; font-weight: 700; }
     p { margin: .7mm 0 0; font-family: Georgia, 'Times New Roman', serif; font-size: 9.5px; font-style: italic; color: #7a2019; }
-    .grilla { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 1.4mm; position: relative; z-index: 1; }
-    .celda { border: 1.5px solid #c98a66; border-radius: 6px; background: rgba(255,255,255,.94); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1mm; min-width: 0; box-shadow: 0 1px 0 rgba(122, 32, 25, .12); }
+    .grilla { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 1.4mm; position: relative; z-index: 2; }
+    .celda { border: 1.5px solid #c98a66; border-radius: 6px; background: rgba(255,255,255,.92); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1mm; min-width: 0; box-shadow: 0 1px 0 rgba(122, 32, 25, .12); }
     .celda strong { color: #d71920; font-size: 20px; line-height: 1; }
     .celda span { margin-top: 1mm; font-size: 8.5px; line-height: 1.05; font-weight: 700; }
-    footer { display: flex; justify-content: space-between; gap: 2mm; color: #7a2019; font-size: 8.8px; font-weight: 800; border-top: 1.4px solid #d8a37a; padding-top: 1.2mm; position: relative; z-index: 1; }
-    .decoracion { position: absolute; z-index: 0; display: flex; align-items: center; justify-content: center; border: 1px dashed rgba(124, 31, 23, .38); color: rgba(124, 31, 23, .46); background: rgba(255, 241, 213, .72); font-size: 7px; font-weight: 800; text-transform: uppercase; }
-    .escudo { left: 4mm; top: 4mm; width: 13mm; height: 15mm; border-radius: 50% 50% 45% 45%; }
-    .hospital { right: 4mm; top: 4mm; width: 19mm; height: 13mm; border-radius: 4px; }
-    .flamenca { left: 3mm; bottom: 8mm; width: 14mm; height: 22mm; border-radius: 50% 50% 45% 45%; transform: rotate(-6deg); }
-    .guitarra { right: 3mm; bottom: 9mm; width: 12mm; height: 24mm; border-radius: 50%; transform: rotate(11deg); }
-    .notas { right: 20mm; top: 21mm; border: 0; background: transparent; color: rgba(197, 22, 25, .42); font-size: 14px; }
-    .abanico { left: 18mm; bottom: 7mm; width: 20mm; height: 10mm; border-radius: 20mm 20mm 3mm 3mm; transform: rotate(5deg); }
+    footer { display: flex; justify-content: space-between; gap: 2mm; color: #7a2019; font-size: 8.8px; font-weight: 800; border-top: 1.4px solid #d8a37a; padding-top: 1.2mm; position: relative; z-index: 2; }
+    .decoracion { position: absolute; display: block; object-fit: contain; pointer-events: none; user-select: none; }
+    .escudo { left: 4mm; top: 3mm; width: 14mm; height: 16mm; z-index: 3; }
+    .hospital { right: 4mm; top: 3mm; width: 16mm; height: 17mm; z-index: 3; }
+    .flamenca { left: 4mm; top: 21mm; width: 15mm; height: 22mm; z-index: 1; filter: drop-shadow(0 1px 1px rgba(80, 35, 20, .18)); }
+    .guitarra { left: 6mm; bottom: 11mm; width: 18mm; height: 24mm; z-index: 0; opacity: .16; filter: grayscale(1); transform: rotate(-13deg); }
+    .notas { left: 48%; top: 45%; width: 34mm; height: 20mm; z-index: 0; opacity: .14; filter: grayscale(1); transform: translate(-50%, -50%) rotate(-3deg); }
+    .abanico { right: 4mm; bottom: 4mm; width: 24mm; height: 20mm; z-index: 1; filter: drop-shadow(0 1px 1px rgba(80, 35, 20, .16)); }
   </style></head><body>${hojas.map((hoja) => `<section class="hoja">${hoja.map((carton) => `<div class="slot">${renderCarton(carton)}</div>`).join('')}</section>`).join('')}</body></html>`;
 }
 
