@@ -1,0 +1,31 @@
+services:
+  cartones-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cartones-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "3010:3000"
+    networks:
+      - cartones-net
+
+  cartones-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cartones-frontend
+    restart: unless-stopped
+    depends_on:
+      - cartones-backend
+    ports:
+      - "8088:80"
+    networks:
+      - cartones-net
+
+networks:
+  cartones-net:
+    driver: bridge
