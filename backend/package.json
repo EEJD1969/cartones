@@ -1,4 +1,6 @@
 {
+  "description": "Backend para generar PDFs de cartones de Bingo Cantado Solidario",
+  "type": "module",
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js"
@@ -7,6 +9,5 @@
     "express": "^4.21.2",
     "playwright": "1.49.1"
   },
-  "devDependencies": {},
-  "type": "module"
+  "devDependencies": {}
 }

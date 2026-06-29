@@ -35,6 +35,7 @@ export function generarCartones(cantidad, numeroInicial) {
   });
 }
 
+// Estructura visual basada en el modelo real; las marcas son placeholders reemplazables.
 function renderCarton(carton) {
   return `<article class="carton">
     <div class="marca marca-escudo"><strong>CE</strong><span>Centro Español</span></div>
