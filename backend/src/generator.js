@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { canciones } from './songs.js';
 
 const pad4 = (n) => String(n).padStart(4, '0');
-const escapeHtml = (value) => String(value).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const escapeHtml = (value) => String(value).replace(/[&<>\"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const totalCanciones = canciones.length;
 const assetsDir = join(dirname(fileURLToPath(import.meta.url)), 'assets');
 
@@ -65,27 +65,35 @@ function imagenDecorativa(clase, src, alt = '') {
 
 function renderCarton(carton) {
   return `<article class="carton">
-    <aside class="lateral">
-      <span>Cartón Nº</span>
-      <strong>${carton.numero}</strong>
-      <span>Código</span>
-      <strong>${carton.codigo}</strong>
-    </aside>
+    <div class="esquina esquina-sup-izq">✂</div>
+    <div class="esquina esquina-sup-der">✂</div>
+    <div class="esquina esquina-inf-izq">✂</div>
+    <div class="esquina esquina-inf-der">✂</div>
     <section class="contenido">
       ${imagenDecorativa('escudo', imagenes.escudo)}
       ${imagenDecorativa('hospital', imagenes.hospital)}
       ${imagenDecorativa('flamenca', imagenes.flamenca)}
       ${imagenDecorativa('guitarra', imagenes.guitarra)}
       ${imagenDecorativa('notas', imagenes.notas)}
+      ${imagenDecorativa('flamenca-derecha', imagenes.flamenca)}
+      ${imagenDecorativa('arabesco-izq', imagenes.notas)}
       ${imagenDecorativa('abanico', imagenes.abanico)}
       <header>
         <h1>BINGO CANTADO SOLIDARIO</h1>
         <h2>A beneficio del Hospital Ambulante</h2>
         <p>“Contagiando salud y solidaridad”</p>
+        <div class="separador"><span>𝄞</span><i></i><b>♥</b><i></i><span>♪</span></div>
+        <div class="colabora"><span>• Colabora: Grupo Antonia •</span><strong>Expresiones Flamencas</strong></div>
       </header>
-      <div class="grilla">${carton.celdas.map((celda) => `<div class="celda"><strong>${celda.numero}</strong><span>${escapeHtml(celda.cancion)}</span></div>`).join('')}</div>
-      <footer><span>Grupo Antonia</span><span>Expresiones Flamencas</span></footer>
+      <aside class="datos">
+        <span>Cartón Nº</span>
+        <strong>${carton.numero}</strong>
+        <span>Código:</span>
+        <em>${carton.codigo}</em>
+      </aside>
+      <div class="grilla">${carton.celdas.map((celda) => `<div class="celda"><strong>(${celda.numero})</strong><span>${escapeHtml(celda.cancion)}</span></div>`).join('')}</div>
     </section>
+    <footer class="recorte"><span>✂</span><i></i><b>Recortar por las líneas punteadas</b><i></i><span>♥</span></footer>
   </article>`;
 }
 
@@ -94,35 +102,53 @@ export function generarHtml(cartones) {
   for (let i = 0; i < cartones.length; i += 4) hojas.push(cartones.slice(i, i + 4));
 
   return `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Cartones Bingo</title><style>
-    @page { size: A4 landscape; margin: 7mm; }
+    @page { size: A4 landscape; margin: 4mm; }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #2a1711; background: #fff; }
-    .hoja { width: 283mm; height: 196mm; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; page-break-after: always; position: relative; }
+    body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #050505; background: #fff; }
+    .hoja { width: 289mm; height: 202mm; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); page-break-after: always; position: relative; background: #fff; }
     .hoja:last-child { page-break-after: auto; }
-    .slot { padding: 4mm; position: relative; }
-    .slot:nth-child(odd) { border-right: 1.2px dashed #9b7a6c; }
-    .slot:nth-child(-n+2) { border-bottom: 1.2px dashed #9b7a6c; }
-    .carton { height: 100%; border: 2px solid #7c1f17; border-radius: 8px; display: flex; overflow: hidden; background: #fff8eb; box-shadow: inset 0 0 0 1.3px #efc7a9; }
-    .lateral { width: 29mm; background: linear-gradient(180deg, #8e1d16, #62130f); color: #fff6df; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3mm; text-align: center; padding: 3mm; border-right: 2px solid #d4a15d; }
-    .lateral span { font-size: 9px; text-transform: uppercase; letter-spacing: .8px; }
-    .lateral strong { font-size: 18px; line-height: 1; }
-    .contenido { flex: 1; padding: 3mm 4mm; display: flex; flex-direction: column; gap: 2mm; position: relative; overflow: hidden; background: radial-gradient(circle at 13% 16%, rgba(218, 45, 35, .08), transparent 23%), radial-gradient(circle at 87% 18%, rgba(219, 155, 47, .14), transparent 24%), linear-gradient(180deg, #fffaf0 0%, #fff4e2 100%); }
-    header { text-align: center; border-bottom: 1.4px solid #d8a37a; padding: 0 18mm 1.5mm; min-height: 22mm; position: relative; z-index: 2; }
-    h1 { margin: 0; color: #c51619; font-size: 19px; letter-spacing: .6px; font-weight: 900; text-shadow: 0 1px 0 #fff; }
-    h2 { margin: .7mm 0 0; font-family: Georgia, 'Times New Roman', serif; font-size: 12px; color: #3b2118; font-weight: 700; }
-    p { margin: .7mm 0 0; font-family: Georgia, 'Times New Roman', serif; font-size: 9.5px; font-style: italic; color: #7a2019; }
-    .grilla { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 1.4mm; position: relative; z-index: 2; }
-    .celda { border: 1.5px solid #c98a66; border-radius: 6px; background: rgba(255,255,255,.92); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1mm; min-width: 0; box-shadow: 0 1px 0 rgba(122, 32, 25, .12); }
-    .celda strong { color: #d71920; font-size: 20px; line-height: 1; }
-    .celda span { margin-top: 1mm; font-size: 8.5px; line-height: 1.05; font-weight: 700; }
-    footer { display: flex; justify-content: space-between; gap: 2mm; color: #7a2019; font-size: 8.8px; font-weight: 800; border-top: 1.4px solid #d8a37a; padding-top: 1.2mm; position: relative; z-index: 2; }
+    .slot { padding: 2.2mm 2.8mm; position: relative; min-width: 0; min-height: 0; }
+    .slot:nth-child(odd)::after { content: ''; position: absolute; top: 0; right: 0; height: 100%; border-right: 1px dashed #555; }
+    .slot:nth-child(-n+2)::before { content: ''; position: absolute; left: 0; bottom: 0; width: 100%; border-bottom: 1px dashed #555; }
+    .carton { height: 100%; position: relative; padding: 3mm 3mm 8.2mm; border: 1px dashed #555; background: #fff; overflow: hidden; }
+    .carton::before { content: ''; position: absolute; inset: 1.2mm; border: 1px dashed #777; pointer-events: none; }
+    .contenido { height: 100%; position: relative; overflow: hidden; background: #fff; }
+    header { text-align: center; min-height: 39mm; padding: 4mm 31mm 0; position: relative; z-index: 2; }
+    h1 { margin: 0; color: #c30000; font-family: Impact, 'Arial Narrow', Arial, sans-serif; font-size: 22px; line-height: 1.04; letter-spacing: .45px; font-weight: 900; }
+    h2 { margin: 2mm 0 0; font-family: Georgia, 'Times New Roman', serif; font-size: 13.5px; font-weight: 700; }
+    p { margin: 1.2mm 0 0; color: #d00000; font-family: Georgia, 'Times New Roman', serif; font-size: 12px; font-style: italic; font-weight: 700; }
+    .separador { display: flex; align-items: center; justify-content: center; gap: 1.4mm; margin: 1.2mm auto .8mm; width: 58mm; color: #101010; font-size: 16px; }
+    .separador i { height: 0; flex: 1; border-top: 1px dotted #111; }
+    .separador b { color: #d00000; font-size: 16px; line-height: 1; }
+    .colabora { display: flex; flex-direction: column; align-items: center; gap: .7mm; font-size: 11px; font-weight: 700; }
+    .colabora strong { color: #d00000; font-family: Georgia, 'Times New Roman', serif; font-size: 12px; font-style: italic; }
+    .datos { position: absolute; left: 6.5mm; bottom: 13mm; z-index: 3; width: 22mm; min-height: 31mm; border: 1.3px dotted #f20000; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2mm; background: rgba(255,255,255,.88); text-align: center; }
+    .datos span { font-size: 8.5px; font-weight: 700; }
+    .datos strong { font-size: 19px; line-height: 1; }
+    .datos em { color: #e00000; font-style: normal; font-size: 10px; font-weight: 900; }
+    .grilla { position: absolute; z-index: 2; right: 14.5mm; bottom: 15mm; width: 76mm; height: 54mm; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); border: .9px solid #343434; background: #fff; }
+    .celda { border-right: .9px solid #343434; border-bottom: .9px solid #343434; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1mm; min-width: 0; }
+    .celda:nth-child(3n) { border-right: 0; }
+    .celda:nth-child(n+7) { border-bottom: 0; }
+    .celda strong { color: #f00000; font-size: 12px; line-height: 1; font-weight: 900; }
+    .celda span { margin-top: 1.5mm; color: #0a0a0a; font-size: 11px; line-height: 1.12; font-weight: 800; }
+    .recorte { position: absolute; left: 3.2mm; right: 3.2mm; bottom: 1.2mm; height: 6mm; display: flex; align-items: center; justify-content: center; gap: 1.7mm; font-size: 11px; z-index: 4; }
+    .recorte i { max-width: 26mm; flex: 1; border-top: 1px dashed #555; }
+    .recorte span:last-child { color: #d00000; font-size: 14px; margin-left: 2mm; }
+    .esquina { position: absolute; z-index: 5; font-size: 13px; color: #111; line-height: 1; }
+    .esquina-sup-izq { top: .8mm; left: .8mm; }
+    .esquina-sup-der { top: .8mm; right: .8mm; transform: rotate(90deg); }
+    .esquina-inf-izq { bottom: 7.2mm; left: .8mm; transform: rotate(-90deg); }
+    .esquina-inf-der { bottom: 7.2mm; right: .8mm; transform: rotate(180deg); }
     .decoracion { position: absolute; display: block; object-fit: contain; pointer-events: none; user-select: none; }
-    .escudo { left: 4mm; top: 3mm; width: 14mm; height: 16mm; z-index: 3; }
-    .hospital { right: 4mm; top: 3mm; width: 16mm; height: 17mm; z-index: 3; }
-    .flamenca { left: 4mm; top: 21mm; width: 15mm; height: 22mm; z-index: 1; filter: drop-shadow(0 1px 1px rgba(80, 35, 20, .18)); }
-    .guitarra { left: 6mm; bottom: 11mm; width: 18mm; height: 24mm; z-index: 0; opacity: .16; filter: grayscale(1); transform: rotate(-13deg); }
-    .notas { left: 48%; top: 45%; width: 34mm; height: 20mm; z-index: 0; opacity: .14; filter: grayscale(1); transform: translate(-50%, -50%) rotate(-3deg); }
-    .abanico { right: 4mm; bottom: 4mm; width: 24mm; height: 20mm; z-index: 1; filter: drop-shadow(0 1px 1px rgba(80, 35, 20, .16)); }
+    .escudo { left: 9mm; top: 4mm; width: 30mm; height: 30mm; z-index: 3; }
+    .hospital { right: 8mm; top: 7mm; width: 29mm; height: 28mm; z-index: 3; }
+    .flamenca { left: 36mm; top: 9mm; width: 19mm; height: 34mm; z-index: 2; }
+    .flamenca-derecha { right: 10mm; bottom: 17mm; width: 18mm; height: 35mm; z-index: 1; opacity: .24; filter: grayscale(1); }
+    .guitarra { left: 9mm; bottom: 28mm; width: 25mm; height: 35mm; z-index: 0; opacity: .18; filter: grayscale(1); transform: rotate(-14deg); }
+    .notas { left: 51mm; bottom: 22mm; width: 24mm; height: 20mm; z-index: 0; opacity: .22; filter: grayscale(1); transform: rotate(-6deg); }
+    .arabesco-izq { left: 26mm; bottom: 10mm; width: 25mm; height: 17mm; z-index: 0; opacity: .22; filter: grayscale(1); transform: rotate(14deg); }
+    .abanico { right: 4mm; bottom: 10mm; width: 25mm; height: 20mm; z-index: 1; opacity: .62; }
   </style></head><body>${hojas.map((hoja) => `<section class="hoja">${hoja.map((carton) => `<div class="slot">${renderCarton(carton)}</div>`).join('')}</section>`).join('')}</body></html>`;
 }
 
