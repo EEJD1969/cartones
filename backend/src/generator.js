@@ -86,8 +86,8 @@ export function generarHtml(cartones) {
     .carton { height: 100%; position: relative; padding: 0; background: #fff; overflow: hidden; }
     .contenido { height: 100%; position: relative; overflow: hidden; background: transparent; }
     .carton-template { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: fill; display: block; pointer-events: none; user-select: none; }
-    .contenido { --grid-x: 46.4mm; --grid-y: 41.54mm; --cell-width: 24.67mm; --cell-height: 16.9mm; }
-    .datos { position: absolute; left: 6.5mm; bottom: 13mm; z-index: 3; width: 22mm; min-height: 31mm; border: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.8mm; background: transparent; text-align: center; }
+    .contenido { --grid-x: calc(46.4mm + 18px); --grid-y: calc(41.54mm + 16px); --cell-width: calc(24.67mm - 2px); --cell-height: calc(16.9mm - 2px); }
+    .datos { position: absolute; left: 6.5mm; bottom: calc(13mm - 7px); z-index: 3; width: 22mm; min-height: 31mm; border: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.8mm; background: transparent; text-align: center; }
     .datos-label { font-size: 11px; line-height: 1; font-weight: 900; }
     .datos strong { font-size: 19px; line-height: 1; }
     .datos em { color: #e00000; font-style: normal; font-size: 10px; font-weight: 900; }
