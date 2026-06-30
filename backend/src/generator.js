@@ -13,12 +13,6 @@ function pngDataUri(nombreArchivo) {
 }
 
 const imagenes = {
-  escudo: pngDataUri('escudo.png'),
-  hospital: pngDataUri('hospital.png'),
-  flamenca: pngDataUri('flamenca.png'),
-  guitarra: pngDataUri('guitarra.png'),
-  notas: pngDataUri('notas.png'),
-  abanico: pngDataUri('abanico.png'),
   template: pngDataUri('template/carton-template.png')
 };
 
@@ -60,21 +54,11 @@ export function generarCartones(cantidad, numeroInicial) {
   });
 }
 
-function imagenDecorativa(clase, src, alt = '') {
-  return `<img class="decoracion ${clase}" src="${src}" alt="${alt}" aria-hidden="true">`;
-}
 
 function renderCarton(carton) {
   return `<article class="carton">
     <section class="contenido">
-      ${imagenDecorativa('escudo', imagenes.escudo)}
-      ${imagenDecorativa('hospital', imagenes.hospital)}
-      ${imagenDecorativa('flamenca', imagenes.flamenca)}
-      ${imagenDecorativa('guitarra', imagenes.guitarra)}
-      ${imagenDecorativa('notas', imagenes.notas)}
-      ${imagenDecorativa('flamenca-derecha', imagenes.flamenca)}
-      ${imagenDecorativa('arabesco-izq', imagenes.notas)}
-      ${imagenDecorativa('abanico', imagenes.abanico)}
+      <img class="carton-template" src="${imagenes.template}" alt="" aria-hidden="true">
       <header>
         <h1>BINGO CANTADO SOLIDARIO</h1>
         <h2>A beneficio del Hospital Ambulante</h2>
@@ -111,8 +95,9 @@ export function generarHtml(cartones) {
     .slot { padding: 0; position: relative; min-width: 0; min-height: 0; }
     .slot:nth-child(odd)::after { content: ''; position: absolute; top: 0; right: 0; height: 100%; border-right: 1px dashed #555; }
     .slot:nth-child(-n+2)::before { content: ''; position: absolute; left: 0; bottom: 0; width: 100%; border-bottom: 1px dashed #555; }
-    .carton { height: 100%; position: relative; padding: 0; background: #fff url('${imagenes.template}') center / 100% 100% no-repeat; overflow: hidden; }
+    .carton { height: 100%; position: relative; padding: 0; background: #fff; overflow: hidden; }
     .contenido { height: 100%; position: relative; overflow: hidden; background: transparent; }
+    .carton-template { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: fill; display: block; pointer-events: none; user-select: none; }
     header { text-align: center; min-height: 39mm; padding: 4mm 31mm 0; position: relative; z-index: 2; }
     h1 { margin: 0; color: #c30000; font-family: Impact, 'Arial Narrow', Arial, sans-serif; font-size: 22px; line-height: 1.04; letter-spacing: .45px; font-weight: 900; }
     h2 { margin: 2mm 0 0; font-family: Georgia, 'Times New Roman', serif; font-size: 13.5px; font-weight: 700; }
@@ -126,21 +111,12 @@ export function generarHtml(cartones) {
     .datos span { font-size: 8.5px; font-weight: 700; }
     .datos strong { font-size: 19px; line-height: 1; }
     .datos em { color: #e00000; font-style: normal; font-size: 10px; font-weight: 900; }
-    .grilla { position: absolute; z-index: 2; right: 13.5mm; bottom: 14mm; width: 76mm; height: 54mm; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); border: .9px solid #343434; background: #fff; }
+    .grilla { position: absolute; z-index: 2; right: 20.1mm; bottom: 23.3mm; width: 74mm; height: 52mm; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); border: .9px solid #343434; background: #fff; }
     .celda { border-right: .9px solid #343434; border-bottom: .9px solid #343434; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1mm; min-width: 0; }
     .celda:nth-child(3n) { border-right: 0; }
     .celda:nth-child(n+7) { border-bottom: 0; }
     .celda strong { color: #f00000; font-size: 12px; line-height: 1; font-weight: 900; }
     .celda span { margin-top: 1.5mm; color: #0a0a0a; font-size: 11px; line-height: 1.12; font-weight: 800; }
-    .decoracion { position: absolute; display: block; object-fit: contain; pointer-events: none; user-select: none; }
-    .escudo { left: 9mm; top: 4mm; width: 30mm; height: 30mm; z-index: 3; }
-    .hospital { right: 8mm; top: 7mm; width: 29mm; height: 28mm; z-index: 3; }
-    .flamenca { left: 36mm; top: 9mm; width: 19mm; height: 34mm; z-index: 2; }
-    .flamenca-derecha { right: 10mm; bottom: 17mm; width: 18mm; height: 35mm; z-index: 1; opacity: .24; filter: grayscale(1); }
-    .guitarra { left: 9mm; bottom: 28mm; width: 25mm; height: 35mm; z-index: 0; opacity: .18; filter: grayscale(1); transform: rotate(-14deg); }
-    .notas { left: 51mm; bottom: 22mm; width: 24mm; height: 20mm; z-index: 0; opacity: .22; filter: grayscale(1); transform: rotate(-6deg); }
-    .arabesco-izq { left: 26mm; bottom: 10mm; width: 25mm; height: 17mm; z-index: 0; opacity: .22; filter: grayscale(1); transform: rotate(14deg); }
-    .abanico { right: 4mm; bottom: 10mm; width: 25mm; height: 20mm; z-index: 1; opacity: .62; }
   </style></head><body>${hojas.map((hoja) => `<section class="hoja"><span class="tijera tijera-vertical-sup">✂</span><span class="tijera tijera-vertical-inf">✂</span><span class="tijera tijera-horizontal-izq">✂</span><span class="tijera tijera-horizontal-der">✂</span>${hoja.map((carton) => `<div class="slot">${renderCarton(carton)}</div>`).join('')}</section>`).join('')}</body></html>`;
 }
 
